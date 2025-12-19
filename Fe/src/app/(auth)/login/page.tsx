@@ -1,23 +1,31 @@
 "use client";
-import { Button } from "@/src/components/ui/button";
-import { Input } from "@/src/components/ui/input";
-import { Label } from "@/src/components/ui/label";
-import { signIn } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { login } from "@/services/user.service";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const Login = () => {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-    const handleLogin = async (e: React.FormEvent) => {
-      e.preventDefault();
-      const res = await signIn("credentials", {
-        email,
-        password,
-        redirect: true,
-        callbackUrl: "/",
-      });
-    };
+  const [loading, setLoading] = useState(false);
+  const { mutate } = useMutation({
+    mutationFn: login,
+    onSuccess: () => {
+      router.push("/");
+    },
+  });
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    await mutate({ email, password });
+    setLoading(false);
+  };
   return (
     <form className="max-w-md mx-auto mt-20" onSubmit={handleLogin}>
       <div className="mb-4">
@@ -38,9 +46,16 @@ const Login = () => {
           required
         />
       </div>
-      <Button type="submit"  className="w-full bg-black text-white">Login</Button>
+      <Button
+        type="submit"
+        disabled={loading}
+        className="w-full bg-black text-white"
+      >
+        {loading ? "Creating..." : "Login"}
+      </Button>
+      <div className="text-right mt-2 text-[15px] text-blue-400" ><Link  href="/register">Register</Link></div>
     </form>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
