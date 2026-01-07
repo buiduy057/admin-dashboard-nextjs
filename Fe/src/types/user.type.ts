@@ -9,6 +9,7 @@ export interface User {
 }
 
 export interface UserPayload {
+  id?:string;
   email: string;
   password: string;
   role?: UserRole;

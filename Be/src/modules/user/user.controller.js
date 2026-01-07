@@ -7,7 +7,7 @@ import User from "../../models/User.js";
  */
 export const getUsers = async (req, res) => {
   const page = Number(req.query.page || 1);
-  const limit = Number(req.query.limit || 20);
+  const limit = Number(req.query.limit || 1);
   const offset = (page - 1) * limit;
   const { keyword, role, is_active } = req.query;
   const where = {};

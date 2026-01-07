@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 
 import authRoutes from "./modules/auth/auth.routes.js";
+import userRoutes from "./modules/user/user.routes.js";
 import errorHandler from "./middlewares/error.middleware.js";
 
 dotenv.config();
@@ -35,6 +36,8 @@ if (process.env.NODE_ENV === "development") {
 }
 
 app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+
 
 /* ================== NOT FOUND ================== */
 

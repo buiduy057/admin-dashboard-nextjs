@@ -22,7 +22,7 @@ router.post(
 );
 
 
-router.patch(
+router.put(
   '/:id',
   auth,
   checkRole(['ADMIN']),
