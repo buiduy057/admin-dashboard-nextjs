@@ -1,16 +1,4 @@
 import Category from "../../models/Category.js";
-const names = [
-  "Laptop",
-  "Phone",
-  "Tablet",
-  "Keyboard",
-  "Mouse",
-  "Headphone",
-  "Monitor",
-  "Camera",
-  "Speaker",
-  "Printer",
-];
 /**
  * GET USERS (filter + paginate)
  */

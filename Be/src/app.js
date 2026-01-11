@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 
 import authRoutes from "./modules/auth/auth.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
+import productRoutes from "./modules/product/product.routes.js";
 import auditRoutes from "./modules/audit/audit.routes.js";
 import categoryRoutes from "./modules/category/category.routes.js";
 
@@ -39,6 +40,7 @@ if (process.env.NODE_ENV === "development") {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/audit-logs", auditRoutes);
 

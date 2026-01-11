@@ -5,37 +5,39 @@ import { checkRole } from "../../middlewares/role.middleware.js";
 import { audit } from "../../middlewares/audit.middleware.js";
 
 import {
-  getUsers,
-  createUser,
-  updateUser,
-  deleteUser,
-} from "./user.controller.js";
+  getProducts,
+  getProductDetail,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+} from "./product.controller.js";
 
 const router = Router();
-router.get("/", auth, checkRole(["ADMIN"]), getUsers);
+router.get("/", auth, checkRole(["ADMIN"]), getProducts);
+
+router.get("/:id", auth, checkRole(["ADMIN"]), getProductDetail);
 router.post(
   "/",
   auth,
   checkRole(["ADMIN"]),
-  audit("CREATE", "USER"),
-  createUser
+  audit("CREATE", "PRODUCT"),
+  createProduct
 );
 
-
 router.put(
-  '/:id',
+  "/:id",
   auth,
-  checkRole(['ADMIN']),
-  audit('UPDATE', 'USER'),
-  updateUser
+  checkRole(["ADMIN"]),
+  audit("UPDATE", "PRODUCT"),
+  updateProduct
 );
 
 router.delete(
-  '/:id',
+  "/:id",
   auth,
-  checkRole(['ADMIN']),
-  audit('DELETE', 'USER'),
-  deleteUser
+  checkRole(["ADMIN"]),
+  audit("DELETE", "PRODUCT"),
+  deleteProduct
 );
 
 export default router;

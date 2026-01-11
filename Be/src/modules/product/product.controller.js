@@ -1,67 +1,95 @@
 import { Op } from "sequelize";
-import bcrypt from "bcrypt";
-import User from "../../models/User.js";
+import Product from "../../models/Product.js";
+import Category from "../../models/Category.js";
+import ProductImage from "../../models/ProductImage.js";
 
 /**
- * GET USERS (filter + paginate)
+ * GET PRODUCTS (filter + paginate)
  */
-export const getUsers = async (req, res) => {
-  const page = Number(req.query.page || 1);
-  const limit = Number(req.query.limit || 1);
-  const offset = (page - 1) * limit;
-  const { keyword, role, is_active } = req.query;
-  const where = {};
-  if (role) where.role = role;
-  if (is_active !== undefined) where.is_active = is_active === "true";
-  if (keyword) {
-    where.email = { [Op.like]: `%${keyword}%` };
+export const getProducts = async (req, res) => {
+  try {
+    const page = Number(req.query.page || 1);
+    const limit = Number(req.query.limit || 1);
+    const offset = (page - 1) * limit;
+    const { keyword, categoryId, status } = req.query;
+    const where = {};
+    if (keyword) {
+      where.name = { [Op.like]: `%${keyword}%` };
+    }
+    if (status) {
+      where.status = status;
+    }
+    if (categoryId) {
+      where.category_id = categoryId;
+    }
+    const { rows, count } = await Product.findAndCountAll({
+      where,
+      limit,
+      offset,
+      include: [
+        {
+          model: Category,
+          attributes: ["id", "name"],
+        },
+        { model: ProductImage, attributes: ["id", "image_url"] },
+      ],
+      order: [["id", "DESC"]],
+    });
+    res.json({
+      data: rows,
+      pagination: { page, limit, total: count },
+    });
+  } catch (error) {
+    console.log(error);
   }
-  const { rows, count } = await User.findAndCountAll({
-    where,
-    limit,
-    offset,
-    attributes: { exclude: ["password"] },
-    order: [["id", "DESC"]],
-  });
-  res.json({
-    data: rows,
-    pagination: { page, limit, total: count },
-  });
 };
 
 /**
- * CREATE USER
+ * DETAIL PRODUCT
  */
-export const createUser = async (req, res) => {
-  const { email, password, role } = req.body;
-  const hash = await bcrypt.hash(password, 10);
-  const user = await User.create({
-    email,
-    password: hash,
-    role,
+
+export const getProductDetail = async (req, res) => {
+  const product = await Product.findByPk(req.params.id, {
+    include: [Category, ProductImage],
   });
-  res.status(201).json(user);
+  if (!product) {
+    return res.status(404).json({ message: "Product not found" });
+  }
+  res.status(201).json(product);
 };
 
 /**
- * UPDATE USER (ROLE / ACTIVE)
+ * CREATE PRODUCT
  */
-export const updateUser = async (req, res) => {
+export const createProduct = async (req, res) => {
+  const { name, price, status, categoryId } = req.body;
+  const product = await Product.create({
+    name,
+    price,
+    status,
+    category_id: categoryId,
+  });
+  res.status(201).json(product);
+};
+
+/**
+ * UPDATE PRODUCT
+ */
+export const updateProduct = async (req, res) => {
   const { id } = req.params;
-  const oldUser = await User.findByPk(id);
-  if (!oldUser) return res.sendStatus(404);
-  await User.update(req.body, { where: { id } });
+  const exists = await Product.findByPk(id);
+  if (!exists) return res.sendStatus(404);
+  await Product.update(req.body, { where: { id } });
   res.json({ message: "Updated successfully" });
 };
 
 /**
- * DELETE USER
+ * DELETE PRODUCT
  */
 
-export const deleteUser = async (req, res) => {
+export const deleteProduct = async (req, res) => {
   const { id } = req.params;
-  const oldUser = await User.findByPk(id);
-  if (!oldUser) return res.sendStatus(404);
-  await User.destroy({ where: { id } });
+  await ProductImage.destroy({ where: { product_id: id } });
+  await Product.destroy({ where: { id } });
   res.json({ message: "Deleted successfully" });
 };

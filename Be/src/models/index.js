@@ -25,7 +25,6 @@ ProductVariant.belongsTo(Product, {
 
 Product.hasMany(ProductImage, {
   foreignKey: "product_id",
-  as: "images",
 });
 ProductImage.belongsTo(Product, {
   foreignKey: "product_id",
