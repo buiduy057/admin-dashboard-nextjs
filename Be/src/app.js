@@ -6,6 +6,9 @@ import cookieParser from "cookie-parser";
 
 import authRoutes from "./modules/auth/auth.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
+import auditRoutes from "./modules/audit/audit.routes.js";
+import categoryRoutes from "./modules/category/category.routes.js";
+
 import errorHandler from "./middlewares/error.middleware.js";
 
 dotenv.config();
@@ -26,7 +29,6 @@ app.use(express.json());
 // parse form-data / x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
-
 // Cookies
 app.use(cookieParser());
 
@@ -37,7 +39,8 @@ if (process.env.NODE_ENV === "development") {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
-
+app.use("/api/categories", categoryRoutes);
+app.use("/api/audit-logs", auditRoutes);
 
 /* ================== NOT FOUND ================== */
 

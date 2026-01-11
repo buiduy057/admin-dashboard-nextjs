@@ -6,6 +6,6 @@ export default (req, res, next) => {
     req.user = jwt.verify(token, process.env.JWT_SECRET);
     next();
   } catch {
-    res.sendStatus(403);
+    res.sendStatus(403).json("Forbidden");
   }
 };

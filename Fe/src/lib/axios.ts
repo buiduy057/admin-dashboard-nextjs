@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
+import { toast } from "sonner";
 
 const api: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -26,6 +27,12 @@ api.interceptors.response.use(
         window.location.href = "/login";
       }
     }
+    console.log("error", error);
+    if (error.response?.status === 403) {
+      toast.error("Bạn không có quyền truy cập chức năng này");
+      return Promise.reject(error.response?.data);
+    }
+
     return Promise.reject(error.response?.data || error);
   }
 );

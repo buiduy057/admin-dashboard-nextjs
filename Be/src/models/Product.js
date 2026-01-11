@@ -1,10 +1,10 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '../config/db.js';
+import { DataTypes } from "sequelize";
+import sequelize from "../config/db.js";
 
-const Product = sequelize.define('Product', {
+const Product = sequelize.define("products", {
   name: DataTypes.STRING,
   price: DataTypes.DECIMAL(10, 2),
-  status: DataTypes.ENUM('ACTIVE', 'INACTIVE'),
+  status: DataTypes.ENUM("ACTIVE", "INACTIVE"),
 });
 
 export default Product;

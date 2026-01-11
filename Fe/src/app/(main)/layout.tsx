@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Sidebar from "@/components/layout/sidebar";
 import Header from "@/components/layout/header";
 import { requireAuth } from "@/lib/auth/requireAuth";
-import { Toaster } from "@/components/ui/sonner"
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -14,14 +14,14 @@ export default async function MainLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  await requireAuth([])
+  await requireAuth([]);
   return (
     <div className="flex min-h-screen">
       <Sidebar />
       <div className="flex-1">
         <Header />
         <main className="p-6">{children}</main>
-        <Toaster />
+        <Toaster position="top-center" richColors />
       </div>
     </div>
   );

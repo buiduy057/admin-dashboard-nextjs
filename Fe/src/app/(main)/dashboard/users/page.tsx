@@ -16,8 +16,9 @@ const UserPage = () => {
   const [dataUserModel, setDataUserModel] = useState({});
   const queryClient = useQueryClient();
   const { data: response, isLoading } = useQuery({
-    queryKey: ["get-user",page],
+    queryKey: ["get-user", page],
     queryFn: () => getUser({ page }),
+    retry: false,
   });
   const { mutate } = useMutation({
     mutationFn: removeUser,
@@ -76,17 +77,25 @@ const UserPage = () => {
   };
   return (
     <div>
-      <Button className="bg-green-400 w-25 border-grebg-green-400 cursor-pointer text-amber-50" onClick={()=>setIsOpen(true)}>Add</Button>
-      <CommonTable
-        columns={columns}
-        data={users}
-        pagination={{
-          page: pagination.page,
-          pageSize: pagination.limit,
-          total: pagination.total,
-          onChange: handleChangePage,
-        }}
-      />
+      <Button
+        className="bg-green-400 w-25 border-grebg-green-400 cursor-pointer text-amber-50"
+        onClick={() => setIsOpen(true)}
+      >
+        Add
+      </Button>
+      {users.length > 0 ? (
+        <CommonTable
+          columns={columns}
+          data={users}
+          pagination={{
+            page: pagination.page,
+            pageSize: pagination.limit,
+            total: pagination.total,
+            onChange: handleChangePage,
+          }}
+        />
+      ) : null}
+
       <CommonModel isOpen={isOpen} setOpen={setIsOpen} data={dataUserModel} />
     </div>
   );
