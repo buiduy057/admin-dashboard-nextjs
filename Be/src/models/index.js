@@ -5,15 +5,29 @@ import ProductImage from "./ProductImage.js";
 import AuditLog from "./AuditLog.js";
 import Category from "./Category.js";
 
-AuditLog.belongsTo(User, { foreignKey: "user_id" });
-User.hasMany(AuditLog, { foreignKey: "user_id" });
+/* ================= USER - AUDIT LOG ================= */
+User.hasMany(AuditLog, {
+  foreignKey: "user_id",
+  as: "auditLogs",
+});
 
-User.hasMany(Product, { foreignKey: "category_id" });
-Product.belongsTo(User, { foreignKey: "category_id" });
+AuditLog.belongsTo(User, {
+  foreignKey: "user_id",
+  as: "user",
+});
 
-Category.hasMany(Product, { foreignKey: "created_by" });
-Product.belongsTo(Category, { foreignKey: "created_by" });
+/* ================= CATEGORY - PRODUCT ================= */
+Category.hasMany(Product, {
+  foreignKey: "category_id",
+  as: "products",
+});
 
+Product.belongsTo(Category, {
+  foreignKey: "category_id",
+  as: "category",
+});
+
+/* ================= PRODUCT - VARIANT ================= */
 Product.hasMany(ProductVariant, {
   foreignKey: "product_id",
   as: "variants",
@@ -21,13 +35,25 @@ Product.hasMany(ProductVariant, {
 
 ProductVariant.belongsTo(Product, {
   foreignKey: "product_id",
+  as: "product",
 });
 
+/* ================= PRODUCT - IMAGE ================= */
 Product.hasMany(ProductImage, {
   foreignKey: "product_id",
-});
-ProductImage.belongsTo(Product, {
-  foreignKey: "product_id",
+  as: "images",
 });
 
-export { User, Product, ProductVariant, ProductImage, AuditLog, Category };
+ProductImage.belongsTo(Product, {
+  foreignKey: "product_id",
+  as: "product",
+});
+
+export {
+  User,
+  Product,
+  ProductVariant,
+  ProductImage,
+  AuditLog,
+  Category,
+};

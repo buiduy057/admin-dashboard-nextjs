@@ -8,10 +8,6 @@ const Product = sequelize.define("products", {
     type: DataTypes.ENUM("ACTIVE", "INACTIVE"),
     defaultValue: "ACTIVE",
   },
-  category_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
 });
 
 export default Product;
