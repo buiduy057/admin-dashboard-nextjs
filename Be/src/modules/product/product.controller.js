@@ -29,9 +29,10 @@ export const getProducts = async (req, res) => {
       include: [
         {
           model: Category,
+          as: "category",
           attributes: ["id", "name"],
         },
-        { model: ProductImage, attributes: ["id", "image_url"] },
+        { model: ProductImage, as: "images" ,attributes: ["id", "image_url"] },
       ],
       order: [["id", "DESC"]],
     });
@@ -49,27 +50,46 @@ export const getProducts = async (req, res) => {
  */
 
 export const getProductDetail = async (req, res) => {
-  const product = await Product.findByPk(req.params.id, {
-    include: [Category, ProductImage],
-  });
-  if (!product) {
-    return res.status(404).json({ message: "Product not found" });
+  try {
+    const product = await Product.findByPk(req.params.id, {
+      include: [
+        {
+          model: Category,
+          as: "category",
+          attributes: ["id", "name"],
+        },
+        {
+          model: ProductImage,
+          as: "images",
+          attributes: ["id", "image_url"],
+        },
+      ],
+    });
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    res.status(201).json(product);
+  } catch (error) {
+     console.log(error);
   }
-  res.status(201).json(product);
 };
 
 /**
  * CREATE PRODUCT
  */
 export const createProduct = async (req, res) => {
-  const { name, price, status, categoryId } = req.body;
-  const product = await Product.create({
-    name,
-    price,
-    status,
-    category_id: categoryId,
-  });
-  res.status(201).json(product);
+  try {
+    const { name, price, status, category_id } = req.body;
+    const product = await Product.create({
+      name,
+      price,
+      status,
+      category_id,
+    });
+    res.status(201).json(product);
+  } catch (error) {
+    console.log("error",error)
+  }
 };
 
 /**

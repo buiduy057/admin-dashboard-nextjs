@@ -3,25 +3,29 @@ import jwt from "jsonwebtoken";
 import User from "../../models/User.js";
 
 export const login = async (req, res) => {
-  const { email, password } = req.body;
-  const user = await User.findOne({ where: { email } });
-  if (!user) return res.status(400).json({ message: "Invalid login" });
-  const match = await bcrypt.compare(password, user.password);
-  if (!match) return res.status(400).json({ message: "Invalid login" });
+  try {
+      const { email, password } = req.body;
+      const user = await User.findOne({ where: { email } });
+      if (!user) return res.status(400).json({ message: "Invalid login" });
+      const match = await bcrypt.compare(password, user.password);
+      if (!match) return res.status(400).json({ message: "Invalid login" });
 
-  const accessToken = jwt.sign(
-    { id: user.id, role: user.role },
-    process.env.JWT_SECRET,
-    { expiresIn: "60m" }
-  );
-  console.log("accessToken", accessToken);
-  res.cookie("accessToken", accessToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    maxAge: 60 * 60 * 1000,
-  });
-  res.json({ user });
+      const accessToken = jwt.sign(
+        { id: user.id, role: user.role },
+        process.env.JWT_SECRET,
+        { expiresIn: "60m" }
+      );
+      console.log("accessToken", accessToken);
+      res.cookie("accessToken", accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 60 * 60 * 1000,
+      });
+      res.json({ user });
+  } catch (error) {
+     console.log(error)
+  }
 };
 
 export const register = async (req, res) => {

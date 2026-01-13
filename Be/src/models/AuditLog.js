@@ -4,7 +4,7 @@ import sequelize from "../config/db.js";
 const AuditLog = sequelize.define(
   "AuditLog",
   {
-    user_id: DataTypes.BIGINT,
+    user_id: DataTypes.INTEGER,
     action: DataTypes.STRING,
     entity: DataTypes.STRING,
     entity_id: DataTypes.BIGINT,

@@ -14,6 +14,23 @@ export const getCategories = async (req, res, next) => {
  * CREATE USER
  */
 export const createCategories = async (req, res) => {
+  // const names = [
+  // "Laptop",
+  // "Phone",
+  // "Tablet",
+  // "Keyboard",
+  // "Mouse",
+  // "Headphone",
+  // "Monitor",
+  // "Camera",
+  // "Speaker",
+  // "Printer",
+  // ];
+  //  const data = names.map(name => ({ name }));
+
+  // await Category.bulkCreate(data);
+  // res.status(201).json({ message: "Created 10 categories" });
+
   const categories = await Category.create(req.body);
   res.status(201).json(categories);
 };
