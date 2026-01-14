@@ -17,7 +17,7 @@ const startServer = async () => {
     // 1️⃣ Connect MySQL
     await sequelize.authenticate();
     await sequelize.sync();
-        // await sequelize.sync({ force: true });
+    // await sequelize.sync({ force: true });
     console.log("MySQL connected");
     await seedAdmin();
     // 2️⃣ Init socket.io

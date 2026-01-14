@@ -1,8 +1,9 @@
+// @ts-nocheck
 import { Op } from "sequelize";
 import Product from "../../models/Product.js";
 import Category from "../../models/Category.js";
 import ProductImage from "../../models/ProductImage.js";
-
+import cloudinary from "../../config/cloudinary.js";
 /**
  * GET PRODUCTS (filter + paginate)
  */
@@ -32,7 +33,11 @@ export const getProducts = async (req, res) => {
           as: "category",
           attributes: ["id", "name"],
         },
-        { model: ProductImage, as: "images" ,attributes: ["id", "image_url"] },
+        {
+          model: ProductImage,
+          as: "images",
+          attributes: ["id", "image_url", "public_id"],
+        },
       ],
       order: [["id", "DESC"]],
     });
@@ -61,7 +66,7 @@ export const getProductDetail = async (req, res) => {
         {
           model: ProductImage,
           as: "images",
-          attributes: ["id", "image_url"],
+          attributes: ["id", "image_url", "public_id"],
         },
       ],
     });
@@ -70,7 +75,7 @@ export const getProductDetail = async (req, res) => {
     }
     res.status(201).json(product);
   } catch (error) {
-     console.log(error);
+    console.log(error);
   }
 };
 
@@ -88,7 +93,7 @@ export const createProduct = async (req, res) => {
     });
     res.status(201).json(product);
   } catch (error) {
-    console.log("error",error)
+    console.log("error", error);
   }
 };
 
@@ -102,7 +107,41 @@ export const updateProduct = async (req, res) => {
   await Product.update(req.body, { where: { id } });
   res.json({ message: "Updated successfully" });
 };
+/**
+ * UPDATE PRODUCT
+ */
+export const uploadProductImages = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const images = req.files.map((file) => ({
+      product_id: id,
+      public_id: file.filename,
+      image_url: file.path,
+    }));
 
+    await ProductImage.bulkCreate(images);
+    res.json({
+      message: "Upload images successfully",
+      images,
+    });
+  } catch (error) {
+    console.log("error", error);
+    // next(error);
+  }
+};
+
+/**
+ * DELETE IMAGES
+ */
+
+export const deleteImages = async (req, res) => {
+  try {
+    const { public_id } = req.body;
+    cloudinary.uploader.destroy(public_id);
+    await ProductImage.destroy({ where: { public_id } });
+    res.json({ message: "Deleted successfully" });
+  } catch (error) {}
+};
 /**
  * DELETE PRODUCT
  */

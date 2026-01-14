@@ -3,12 +3,14 @@ import { Router } from "express";
 import auth from "../../middlewares/auth.middleware.js";
 import { checkRole } from "../../middlewares/role.middleware.js";
 import { audit } from "../../middlewares/audit.middleware.js";
-
+import upload from "../../utils/uploadCloudinary.js";
 import {
   getProducts,
   getProductDetail,
   createProduct,
   updateProduct,
+  uploadProductImages,
+  deleteImages,
   deleteProduct,
 } from "./product.controller.js";
 
@@ -31,6 +33,16 @@ router.put(
   audit("UPDATE", "PRODUCT"),
   updateProduct
 );
+
+router.post(
+  "/:id/images",
+  auth,
+  checkRole(["ADMIN"]),
+  upload.any(),
+  uploadProductImages
+);
+
+router.post("/images", auth, checkRole(["ADMIN"]), deleteImages);
 
 router.delete(
   "/:id",
